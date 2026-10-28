@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Психологический Турнир: Страх ошибки и Ресурсы</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Unbounded:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #150d2a 0%, #080512 60%, #030208 100%);
+      --glass-bg: rgba(255, 255, 255, 0.02);
+      --glass-bg-hover: rgba(255, 255, 255, 0.05);
+      --glass-bg-active: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-border-glow: rgba(168, 85, 247, 0.4);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+      
+      --accent-purple: #c084fc;
+      --accent-cyan: #22d3ee;
+      --accent-pink: #f472b6;
+      --accent-amber: #fbbf24;
+      --accent-emerald: #34d399;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --font-heading: 'Unbounded', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 60px;
+    }
+
+    .ambient-glows {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .glow-ball {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.35;
+      animation: floatGlow 20s infinite alternate ease-in-out;
+    }
+
+    .glow-1 {
+      width: 600px;
+      height: 600px;
+      background: #7e22ce;
+      top: -100px;
+      left: -100px;
+    }
+
+    .glow-2 {
+      width: 500px;
+      height: 500px;
+      background: #0284c7;
+      bottom: -100px;
+      right: -100px;
+      animation-delay: -7s;
+    }
+
+    .glow-3 {
+      width: 450px;
+      height: 450px;
+      background: #be185d;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -12s;
+    }
+
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(60px, 80px) scale(1.1); }
+      100% { transform: translate(-40px, -60px) scale(0.95); }
+    }
+
+    .app-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px 20px;
+    }
+
+    .title-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: rgba(192, 132, 252, 0.1);
+      border: 1px solid rgba(192, 132, 252, 0.25);
+      color: var(--accent-purple);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .user-info-card {
+      margin-bottom: 30px;
+      padding: 24px 30px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .input-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .glass-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+      color-scheme: dark;
+    }
+
+    .glass-input:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 15px rgba(192, 132, 252, 0.25);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .glass-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .input-hint {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .tab-navigation {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      padding: 14px 28px;
+      border-radius: 16px;
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tab-btn:hover {
+      background: var(--glass-bg-hover);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.2) 0%, rgba(34, 211, 238, 0.1) 100%);
+      border-color: var(--accent-purple);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(192, 132, 252, 0.2);
+    }
+
+    .mode-switch-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .mode-switch {
+      display: flex;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .mode-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .task-container {
+      display: none;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .task-container.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .duel-view {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .duel-stage-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      letter-spacing: 0.08em;
+    }
+
+    .duel-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      margin-bottom: 24px;
+    }
+
+    .duel-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 650px) {
+      .duel-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .duel-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 28px 20px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .duel-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--accent-purple);
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(192, 132, 252, 0.15);
+    }
+
+    .duel-card .card-number {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+
+    .duel-card .card-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .vs-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-pink);
+    }
+
+    /* Final Choice Display in Duel Container */
+    .final-choice-box {
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.15) 0%, rgba(34, 211, 238, 0.15) 100%);
+      border: 2px solid var(--accent-amber);
+      border-radius: 20px;
+      padding: 30px 24px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
+    }
+
+    .final-choice-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 10px;
+    }
+
+    .bracket-view {
+      padding: 30px 20px;
+      overflow-x: auto;
+    }
+
+    .bracket-wrapper {
+      display: flex;
+      justify-content: space-between;
+      min-width: 900px;
+      gap: 30px;
+      position: relative;
+    }
+
+    .bracket-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      gap: 20px;
+    }
+
+    .bracket-column-title {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .bracket-match {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+
+    .bracket-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 48px;
+      transition: all 0.3s ease;
+    }
+
+    .bracket-item.winner {
+      background: rgba(192, 132, 252, 0.12);
+      border-color: var(--accent-purple);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 0 10px rgba(192, 132, 252, 0.2);
+    }
+
+    .item-num {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .winner-box {
+      background: linear-gradient(135deg, rgba(192, 132, 252, 0.15) 0%, rgba(34, 211, 238, 0.15) 100%);
+      border: 2px solid var(--accent-amber);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 30px;
+      box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .winner-badge {
+      font-family: var(--font-heading);
+      color: var(--accent-amber);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .winner-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .custom-addition-section {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.015);
+      border-radius: 16px;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .custom-addition-section label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .interpretation-card {
+      margin-top: 30px;
+      padding: 28px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(192, 132, 252, 0.3);
+      border-radius: 20px;
+    }
+
+    .interp-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .interp-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(192, 132, 252, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-purple);
+      font-size: 1.2rem;
+    }
+
+    .interp-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .interp-body {
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-size: 0.95rem;
+    }
+
+    .interp-tag {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--accent-cyan);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--accent-emerald) 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(52, 211, 153, 0.3);
+    }
+
+    .btn-submit:hover {
+      box-shadow: 0 6px 25px rgba(52, 211, 153, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-purple) 0%, #9333ea 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 25px rgba(168, 85, 247, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(3, 2, 8, 0.85);
+      backdrop-filter: blur(16px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: rgba(20, 15, 38, 0.95);
+      border: 1px solid rgba(192, 132, 252, 0.4);
+      border-radius: 28px;
+      max-width: 550px;
+      width: 100%;
+      padding: 36px 30px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .modal-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .modal-results-list {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+    }
+
+    .modal-results-item {
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .modal-results-item:last-child {
+      margin-bottom: 0;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glows">
+    <div class="glow-ball glow-1"></div>
+    <div class="glow-ball glow-2"></div>
+    <div class="glow-ball glow-3"></div>
+  </div>
+
+  <div class="app-container">
+    <header class="glass-panel">
+      <div class="title-badge">Психологический инструментарий</div>
+      <h1>Турнир: Страх ошибки & Ресурсы</h1>
+      <p class="subtitle">Интерактивный метод парных сравнений для определения ключевых триггеров тревожности и факторов профессиональной уверенности</p>
+    </header>
+
+    <section class="glass-panel user-info-card">
+      <div class="info-grid">
+        <div class="input-group">
+          <label for="user-code">Код участника</label>
+          <input type="text" id="user-code" class="glass-input" placeholder="PvO-4131" value="">
+          <span class="input-hint">Пример формата: PvO-4131</span>
+        </div>
+        <div class="input-group">
+          <label for="user-course">Курс</label>
+          <input type="text" id="user-course" class="glass-input" placeholder="Например: 3 курс">
+        </div>
+        <div class="input-group">
+          <label for="user-date">Дата прохождения</label>
+          <input type="date" id="user-date" class="glass-input">
+        </div>
+      </div>
+    </section>
+
+    <div class="tab-navigation">
+      <button class="tab-btn active" onclick="switchTask(1)">
+        <span>⚡</span> Задание 1: Страх ошибки
+      </button>
+      <button class="tab-btn" onclick="switchTask(2)">
+        <span>🛡️</span> Задание 2: Мой ресурс уверенности
+      </button>
+    </div>
+
+    <div class="mode-switch-wrapper">
+      <div class="mode-switch">
+        <button class="mode-btn active" id="btn-mode-duel" onclick="setMode('duel')">Режим Дуэлей</button>
+        <button class="mode-btn" id="btn-mode-bracket" onclick="setMode('bracket')">Сетка Турнира</button>
+      </div>
+    </div>
+
+    <!-- TASK 1 -->
+    <div id="task-1" class="task-container active">
+      <div class="glass-panel" id="t1-duel-container">
+        <div class="duel-view" id="t1-duel-view">
+          <div class="duel-stage-badge" id="t1-stage-label">1/4 Финала • Раунд 1 из 4</div>
+          <h2 class="duel-title" id="t1-duel-title">В какой из двух ситуаций вам СТРАШНЕЕ ошибиться?</h2>
+          
+          <div class="duel-cards-grid" id="t1-duel-grid">
+            <div class="duel-card" onclick="makeChoice(1, 'left')">
+              <span class="card-number" id="t1-left-num">№1</span>
+              <div class="card-text" id="t1-left-text">Загрузка...</div>
+            </div>
+            
+            <div class="vs-circle">VS</div>
+            
+            <div class="duel-card" onclick="makeChoice(1, 'right')">
+              <span class="card-number" id="t1-right-num">№2</span>
+              <div class="card-text" id="t1-right-text">Загрузка...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-panel bracket-view" id="t1-bracket-container" style="display: none;">
+        <div class="bracket-wrapper">
+          <div class="bracket-column">
+            <div class="bracket-column-title">Четвертьфинал</div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t1-m1-1"><span class="item-num">1</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t1-m1-2"><span class="item-num">2</span> <span class="item-text"></span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t1-m2-1"><span class="item-num">3</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t1-m2-2"><span class="item-num">4</span> <span class="item-text"></span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t1-m3-1"><span class="item-num">5</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t1-m3-2"><span class="item-num">6</span> <span class="item-text"></span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t1-m4-1"><span class="item-num">7</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t1-m4-2"><span class="item-num">8</span> <span class="item-text"></span></div>
+            </div>
+          </div>
+
+          <div class="bracket-column">
+            <div class="bracket-column-title">Полуфинал</div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t1-sf1-1"><span class="item-text">Ожидание...</span></div>
+              <div class="bracket-item" id="t1-sf1-2"><span class="item-text">Ожидание...</span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t1-sf2-1"><span class="item-text">Ожидание...</span></div>
+              <div class="bracket-item" id="t1-sf2-2"><span class="item-text">Ожидание...</span></div>
+            </div>
+          </div>
+
+          <div class="bracket-column">
+            <div class="bracket-column-title">Финал</div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t1-f-1"><span class="item-text">Ожидание...</span></div>
+              <div class="bracket-item" id="t1-f-2"><span class="item-text">Ожидание...</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="t1-winner-section" style="display: none;">
+        <div class="winner-box">
+          <div class="winner-badge">🏆 Главный победитель турнира страхов</div>
+          <div class="winner-text" id="t1-winner-title">Идет определение...</div>
+        </div>
+
+        <div class="interpretation-card" id="t1-interp-box">
+          <div class="interp-header">
+            <div class="interp-icon">🧠</div>
+            <div class="interp-title">Психологическая интерпретация</div>
+          </div>
+          <div class="interp-body" id="t1-interp-text">---</div>
+          <div class="interp-tag" id="t1-interp-tag">Загрузка...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TASK 2 -->
+    <div id="task-2" class="task-container">
+      <div class="glass-panel" id="t2-duel-container">
+        <div class="duel-view" id="t2-duel-view">
+          <div class="duel-stage-badge" id="t2-stage-label">1/4 Финала • Раунд 1 из 4</div>
+          <h2 class="duel-title" id="t2-duel-title">Что больше ПОМОГАЕТ вам чувствовать себя увереннее?</h2>
+          
+          <div class="duel-cards-grid" id="t2-duel-grid">
+            <div class="duel-card" onclick="makeChoice(2, 'left')">
+              <span class="card-number" id="t2-left-num">№1</span>
+              <div class="card-text" id="t2-left-text">Загрузка...</div>
+            </div>
+            
+            <div class="vs-circle">VS</div>
+            
+            <div class="duel-card" onclick="makeChoice(2, 'right')">
+              <span class="card-number" id="t2-right-num">№2</span>
+              <div class="card-text" id="t2-right-text">Загрузка...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-panel bracket-view" id="t2-bracket-container" style="display: none;">
+        <div class="bracket-wrapper">
+          <div class="bracket-column">
+            <div class="bracket-column-title">Четвертьфинал</div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t2-m1-1"><span class="item-num">1</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t2-m1-2"><span class="item-num">2</span> <span class="item-text"></span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t2-m2-1"><span class="item-num">3</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t2-m2-2"><span class="item-num">4</span> <span class="item-text"></span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t2-m3-1"><span class="item-num">5</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t2-m3-2"><span class="item-num">6</span> <span class="item-text"></span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t2-m4-1"><span class="item-num">7</span> <span class="item-text"></span></div>
+              <div class="bracket-item" id="t2-m4-2"><span class="item-num">8</span> <span class="item-text"></span></div>
+            </div>
+          </div>
+
+          <div class="bracket-column">
+            <div class="bracket-column-title">Полуфинал</div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t2-sf1-1"><span class="item-text">Ожидание...</span></div>
+              <div class="bracket-item" id="t2-sf1-2"><span class="item-text">Ожидание...</span></div>
+            </div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t2-sf2-1"><span class="item-text">Ожидание...</span></div>
+              <div class="bracket-item" id="t2-sf2-2"><span class="item-text">Ожидание...</span></div>
+            </div>
+          </div>
+
+          <div class="bracket-column">
+            <div class="bracket-column-title">Финал</div>
+            <div class="bracket-match">
+              <div class="bracket-item" id="t2-f-1"><span class="item-text">Ожидание...</span></div>
+              <div class="bracket-item" id="t2-f-2"><span class="item-text">Ожидание...</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="t2-winner-section" style="display: none;">
+        <div class="winner-box">
+          <div class="winner-badge">🛡️ Главный ресурс профессиональной уверенности</div>
+          <div class="winner-text" id="t2-winner-title">Идет определение...</div>
+        </div>
+
+        <div class="interpretation-card" id="t2-interp-box">
+          <div class="interp-header">
+            <div class="interp-icon">🌟</div>
+            <div class="interp-title">Психологический профиль опоры</div>
+          </div>
+          <div class="interp-body" id="t2-interp-text">---</div>
+          <div class="interp-tag" id="t2-interp-tag">Загрузка...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOM NOTE SECTION -->
+    <div class="glass-panel custom-addition-section" style="margin-top: 30px;">
+      <label for="custom-note">Дописать свой вариант (если есть то, что важно для вас, но не вошло в список):</label>
+      <input type="text" id="custom-note" class="glass-input" placeholder="Введите ваш личный фактор или важную ситуацию..." style="width: 100%;">
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-bar">
+      <button class="btn btn-secondary" onclick="resetCurrentTask()">🔄 Сбросить</button>
+      <button class="btn btn-primary" onclick="exportSummary()">📄 Распечатать / Сохранить PDF</button>
+      <button class="btn btn-submit" onclick="submitResults()">🚀 Завершить и отправить результаты</button>
+    </div>
+
+    <footer>
+      Психологический практикум • Автоматическая обработка результатов парных сравнений • 2026
+    </footer>
+  </div>
+
+  <!-- FINAL MODAL -->
+  <div class="modal-overlay" id="final-modal">
+    <div class="modal-card">
+      <div class="modal-icon">🎉</div>
+      <div class="modal-title">Спасибо за участие!</div>
+      <div class="modal-sub">Ваши результаты психологического турнира сформированы и успешно зафиксированы.</div>
+      
+      <div class="modal-results-list" id="modal-results-body">
+        <!-- Dynamic Summary -->
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="closeModal()">Отлично, закрыть</button>
+    </div>
+  </div>
+
+  <script>
+    const itemsTask1 = [
+      { id: 1, text: "Публичный доклад или презентация перед группой" },
+      { id: 2, text: "Публичная защита проекта или курсовой работы" },
+      { id: 3, text: "Проведение фрагмента занятия или тренинга" },
+      { id: 4, text: "Самостоятельная работа с реальным ребёнком или клиентом" },
+      { id: 5, text: "Ролевая консультативная беседа с сокурсником" },
+      { id: 6, text: "Неожиданный вопрос преподавателя на семинаре" },
+      { id: 7, text: "Критические замечания от преподавателя или руководителя практики" },
+      { id: 8, text: "Новое задание без образца и чётких критериев" }
+    ];
+
+    const itemsTask2 = [
+      { id: 1, text: "Разбор моих ошибок с преподавателем и рефлексия" },
+      { id: 2, text: "Доброжелательная обратная связь от сокурсников" },
+      { id: 3, text: "Практика в малых группах, ролевые игры" },
+      { id: 4, text: "Наставничество и супервизия на практике" },
+      { id: 5, text: "Чёткие и заранее известные критерии оценивания" },
+      { id: 6, text: "Постепенное усложнение практических заданий" },
+      { id: 7, text: "Углублённое изучение теории и методик" },
+      { id: 8, text: "Приёмы саморегуляции и работы с тревожностью" }
+    ];
+
+    const interpretationsTask1 = {
+      1: { title: "Страх социальной оценки в группе", desc: "Ваш главный триггер связан с публичным выступлением и оценкой со стороны широкого круга сверстников.", tag: "Фокус: Социальная оценка" },
+      2: { title: "Страх академической экспертной оценки", desc: "Критичным является итоговый результат экспертной проверки вашей работы.", tag: "Фокус: Экспертная оценка" },
+      3: { title: "Страх методической несостоятельности", desc: "Тревога связана с ролью ведущего и организатора процесса.", tag: "Фокус: Роль ведущего" },
+      4: { title: "Страх реальной профессиональной ответственности", desc: "Вы чувствуете глубокую ответственность перед реальными людьми.", tag: "Фокус: Клиентская практика" },
+      5: { title: "Страх оценки со стороны равных (Peer evaluation)", desc: "Наиболее чувствительна ситуация моделирования консультации перед коллегами.", tag: "Фокус: Интервизия" },
+      6: { title: "Страх спонтанности и импровизации", desc: "Тревожность активируется в ситуациях дефицита времени на подготовку.", tag: "Фокус: Спонтанность" },
+      7: { title: "Страх авторитетной критики", desc: "Высокая чувствительность к обратной связи от фигурантов авторитета.", tag: "Фокус: Авторитетная оценка" },
+      8: { title: "Страх неопределенности и отсутствия структуры", desc: "Высокая потребность в четких ориентирах и алгоритмах.", tag: "Фокус: Неопределенность" }
+    };
+
+    const interpretationsTask2 = {
+      1: { title: "Рефлексивно-аналитический ресурс", desc: "Ваша главная опора — конструктивный разбор ошибок с экспертом.", tag: "Ресурс: Рефлексия" },
+      2: { title: "Эмоционально-поддерживающий ресурс", desc: "Вам критически важна безопасная атмосфера и принятие со стороны коллег.", tag: "Ресурс: Поддержка группы" },
+      3: { title: "Деятельностно-игровой ресурс", desc: "Уверенность приходит через моделирование и безопасное апробирование навыков.", tag: "Ресурс: Симуляции" },
+      4: { title: "Институциональный ресурс (Супервизия)", desc: "Наличие старшего наставника является ключевым условием вашей профессиональной смелости.", tag: "Ресурс: Наставничество" },
+      5: { title: "Нормативно-структурный ресурс", desc: "Опора на ясные, измеримые и прозрачные правила.", tag: "Ресурс: Структура" },
+      6: { title: "Градиентный ресурс (Шаг за шагом)", desc: "Принцип 'от простого к сложному'. Постепенное наращивание трудности.", tag: "Ресурс: Постепенность" },
+      7: { title: "Когнитивно-теоретический ресурс", desc: "Глубокая теоретическая подкованность даёт чувство контроля.", tag: "Ресурс: Теория" },
+      8: { title: "Внутренний саморегуляторный ресурс", desc: "Опора на собственную психическую саморегуляцию и техники работы со стрессом.", tag: "Ресурс: Саморегуляция" }
+    };
+
+    let gameState = {
+      1: { qf: [], sf: [], f: [], winner: null, currentStep: 0 },
+      2: { qf: [], sf: [], f: [], winner: null, currentStep: 0 }
+    };
+
+    let viewMode = 'duel';
+    let currentTask = 1;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('user-date').value = today;
+
+      resetTaskState(1);
+      resetTaskState(2);
+      renderUI();
+    });
+
+    function resetTaskState(taskNum) {
+      gameState[taskNum] = {
+        qf: [
+          { p1: 1, p2: 2, winner: null },
+          { p1: 3, p2: 4, winner: null },
+          { p1: 5, p2: 6, winner: null },
+          { p1: 7, p2: 8, winner: null }
+        ],
+        sf: [
+          { p1: null, p2: null, winner: null },
+          { p1: null, p2: null, winner: null }
+        ],
+        f: [
+          { p1: null, p2: null, winner: null }
+        ],
+        winner: null,
+        currentStep: 0
+      };
+    }
+
+    function switchTask(taskNum) {
+      currentTask = taskNum;
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === taskNum - 1);
+      });
+      document.querySelectorAll('.task-container').forEach((cont, idx) => {
+        cont.classList.toggle('active', idx === taskNum - 1);
+      });
+      renderUI();
+    }
+
+    function setMode(mode) {
+      viewMode = mode;
+      document.getElementById('btn-mode-duel').classList.toggle('active', mode === 'duel');
+      document.getElementById('btn-mode-bracket').classList.toggle('active', mode === 'bracket');
+      
+      const duelCont = document.getElementById(`t${currentTask}-duel-container`);
+      const bracketCont = document.getElementById(`t${currentTask}-bracket-container`);
+      
+      if (mode === 'duel') {
+        duelCont.style.display = 'block';
+        bracketCont.style.display = 'none';
+      } else {
+        duelCont.style.display = 'none';
+        bracketCont.style.display = 'block';
+      }
+    }
+
+    function makeChoice(taskNum, side) {
+      const state = gameState[taskNum];
+
+      let currentPair = null;
+      let winnerId = null;
+
+      if (state.currentStep < 4) {
+        currentPair = state.qf[state.currentStep];
+        winnerId = side === 'left' ? currentPair.p1 : currentPair.p2;
+        currentPair.winner = winnerId;
+
+        if (state.currentStep === 0) state.sf[0].p1 = winnerId;
+        if (state.currentStep === 1) state.sf[0].p2 = winnerId;
+        if (state.currentStep === 2) state.sf[1].p1 = winnerId;
+        if (state.currentStep === 3) state.sf[1].p2 = winnerId;
+
+      } else if (state.currentStep < 6) {
+        const sfIdx = state.currentStep - 4;
+        currentPair = state.sf[sfIdx];
+        winnerId = side === 'left' ? currentPair.p1 : currentPair.p2;
+        currentPair.winner = winnerId;
+
+        if (sfIdx === 0) state.f[0].p1 = winnerId;
+        if (sfIdx === 1) state.f[0].p2 = winnerId;
+
+      } else if (state.currentStep === 6) {
+        currentPair = state.f[0];
+        winnerId = side === 'left' ? currentPair.p1 : currentPair.p2;
+        currentPair.winner = winnerId;
+        state.winner = winnerId;
+
+        triggerConfetti();
+      }
+
+      state.currentStep++;
+      renderUI();
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      }
+    }
+
+    function getItem(taskNum, id) {
+      if (!id) return null;
+      const list = taskNum === 1 ? itemsTask1 : itemsTask2;
+      return list.find(item => item.id === id);
+    }
+
+    function renderUI() {
+      renderDuel(currentTask);
+      renderBracket(currentTask);
+      renderWinner(currentTask);
+    }
+
+    function renderDuel(taskNum) {
+      const state = gameState[taskNum];
+      const stageLabel = document.getElementById(`t${taskNum}-stage-label`);
+      const duelTitle = document.getElementById(`t${taskNum}-duel-title`);
+      const duelGrid = document.getElementById(`t${taskNum}-duel-grid`);
+      const leftNum = document.getElementById(`t${taskNum}-left-num`);
+      const leftText = document.getElementById(`t${taskNum}-left-text`);
+      const rightNum = document.getElementById(`t${taskNum}-right-num`);
+      const rightText = document.getElementById(`t${taskNum}-right-text`);
+
+      if (state.currentStep < 4) {
+        duelGrid.style.display = 'grid';
+        stageLabel.innerText = `1/4 Финала • Раунд ${state.currentStep + 1} из 4`;
+        duelTitle.innerText = taskNum === 1 ? "В какой из двух ситуаций вам СТРАШНЕЕ ошибиться?" : "Что больше ПОМОГАЕТ вам чувствовать себя увереннее?";
+        
+        const pair = state.qf[state.currentStep];
+        const item1 = getItem(taskNum, pair.p1);
+        const item2 = getItem(taskNum, pair.p2);
+        leftNum.innerText = `№${item1.id}`;
+        leftText.innerText = item1.text;
+        rightNum.innerText = `№${item2.id}`;
+        rightText.innerText = item2.text;
+      } else if (state.currentStep < 6) {
+        duelGrid.style.display = 'grid';
+        const sfIdx = state.currentStep - 4;
+        stageLabel.innerText = `Полуфинал • Раунд ${sfIdx + 1} из 2`;
+        duelTitle.innerText = taskNum === 1 ? "В какой из двух ситуаций вам СТРАШНЕЕ ошибиться?" : "Что больше ПОМОГАЕТ вам чувствовать себя увереннее?";
+        
+        const pair = state.sf[sfIdx];
+        const item1 = getItem(taskNum, pair.p1);
+        const item2 = getItem(taskNum, pair.p2);
+        leftNum.innerText = `№${item1.id}`;
+        leftText.innerText = item1.text;
+        rightNum.innerText = `№${item2.id}`;
+        rightText.innerText = item2.text;
+      } else if (state.currentStep === 6) {
+        duelGrid.style.display = 'grid';
+        stageLabel.innerText = `ФИНАЛ`;
+        duelTitle.innerText = taskNum === 1 ? "Финальный выбор: что страшит больше всего?" : "Финальный выбор: что является главным ресурсом?";
+        
+        const pair = state.f[0];
+        const item1 = getItem(taskNum, pair.p1);
+        const item2 = getItem(taskNum, pair.p2);
+        leftNum.innerText = `№${item1.id}`;
+        leftText.innerText = item1.text;
+        rightNum.innerText = `№${item2.id}`;
+        rightText.innerText = item2.text;
+      } else {
+        // Tournament Finished - show clean final choice box
+        stageLabel.innerText = `Турнир завершен`;
+        duelTitle.innerText = `Выбор сделан!`;
+        
+        const winnerItem = getItem(taskNum, state.winner);
+        duelGrid.style.display = 'block';
+        duelGrid.innerHTML = `
+          <div class="final-choice-box">
+            <span class="item-num" style="font-size: 0.9rem; padding: 4px 12px;">№${winnerItem.id}</span>
+            <div class="final-choice-title">${winnerItem.text}</div>
+          </div>
+        `;
+      }
+    }
+
+    function renderBracket(taskNum) {
+      const state = gameState[taskNum];
+      const prefix = `t${taskNum}`;
+
+      const items = taskNum === 1 ? itemsTask1 : itemsTask2;
+      items.forEach(it => {
+        const el = document.querySelector(`#${prefix}-m${Math.ceil(it.id/2)}-${(it.id%2===1)?1:2} .item-text`);
+        if (el) el.innerText = it.text;
+      });
+
+      state.sf.forEach((pair, idx) => {
+        const el1 = document.querySelector(`#${prefix}-sf${idx+1}-1 .item-text`);
+        const el2 = document.querySelector(`#${prefix}-sf${idx+1}-2 .item-text`);
+        const it1 = getItem(taskNum, pair.p1);
+        const it2 = getItem(taskNum, pair.p2);
+        el1.innerText = it1 ? `№${it1.id} ${it1.text}` : "Ожидание...";
+        el2.innerText = it2 ? `№${it2.id} ${it2.text}` : "Ожидание...";
+
+        if (pair.winner) {
+          if (pair.winner === pair.p1) el1.parentElement.classList.add('winner');
+          if (pair.winner === pair.p2) el2.parentElement.classList.add('winner');
+        }
+      });
+
+      const fPair = state.f[0];
+      const fel1 = document.querySelector(`#${prefix}-f-1 .item-text`);
+      const fel2 = document.querySelector(`#${prefix}-f-2 .item-text`);
+      const fit1 = getItem(taskNum, fPair.p1);
+      const fit2 = getItem(taskNum, fPair.p2);
+      fel1.innerText = fit1 ? `№${fit1.id} ${fit1.text}` : "Ожидание...";
+      fel2.innerText = fit2 ? `№${fit2.id} ${fit2.text}` : "Ожидание...";
+
+      if (fPair.winner) {
+        if (fPair.winner === fPair.p1) fel1.parentElement.classList.add('winner');
+        if (fPair.winner === fPair.p2) fel2.parentElement.classList.add('winner');
+      }
+    }
+
+    function renderWinner(taskNum) {
+      const state = gameState[taskNum];
+      const winnerSec = document.getElementById(`t${taskNum}-winner-section`);
+      const winnerTitle = document.getElementById(`t${taskNum}-winner-title`);
+      const interpText = document.getElementById(`t${taskNum}-interp-text`);
+      const interpTag = document.getElementById(`t${taskNum}-interp-tag`);
+
+      if (state.winner) {
+        winnerSec.style.display = 'block';
+        const winnerItem = getItem(taskNum, state.winner);
+        winnerTitle.innerText = `№${winnerItem.id}. ${winnerItem.text}`;
+
+        const interpMap = taskNum === 1 ? interpretationsTask1 : interpretationsTask2;
+        const interp = interpMap[state.winner];
+        
+        if (interp) {
+          interpText.innerHTML = `<strong>${interp.title}:</strong> ${interp.desc}`;
+          interpTag.innerText = interp.tag;
+        }
+      } else {
+        winnerSec.style.display = 'none';
+      }
+    }
+
+    function resetCurrentTask() {
+      resetTaskState(currentTask);
+      
+      // Restore grid DOM if final screen was shown
+      const duelGrid = document.getElementById(`t${currentTask}-duel-grid`);
+      duelGrid.style.display = 'grid';
+      duelGrid.innerHTML = `
+        <div class="duel-card" onclick="makeChoice(${currentTask}, 'left')">
+          <span class="card-number" id="t${currentTask}-left-num">№1</span>
+          <div class="card-text" id="t${currentTask}-left-text">Загрузка...</div>
+        </div>
+        <div class="vs-circle">VS</div>
+        <div class="duel-card" onclick="makeChoice(${currentTask}, 'right')">
+          <span class="card-number" id="t${currentTask}-right-num">№2</span>
+          <div class="card-text" id="t${currentTask}-right-text">Загрузка...</div>
+        </div>
+      `;
+      
+      renderUI();
+    }
+
+    function exportSummary() {
+      triggerConfetti();
+      window.print();
+    }
+
+    function submitResults() {
+      const userCode = document.getElementById('user-code').value.trim() || 'PvO-4131';
+      const userDate = document.getElementById('user-date').value || 'Не указана';
+      const customNote = document.getElementById('custom-note').value.trim();
+
+      const w1 = gameState[1].winner ? getItem(1, gameState[1].winner).text : 'Турнир не завершен';
+      const w2 = gameState[2].winner ? getItem(2, gameState[2].winner).text : 'Турнир не завершен';
+
+      const resultsHtml = `
+        <div class="modal-results-item"><strong>Код участника:</strong> ${userCode}</div>
+        <div class="modal-results-item"><strong>Дата:</strong> ${userDate}</div>
+        <div class="modal-results-item" style="margin-top: 10px;"><strong>Главный страх (Задание 1):</strong><br><span style="color: var(--accent-pink);">${w1}</span></div>
+        <div class="modal-results-item" style="margin-top: 10px;"><strong>Главный ресурс (Задание 2):</strong><br><span style="color: var(--accent-cyan);">${w2}</span></div>
+        ${customNote ? `<div class="modal-results-item" style="margin-top: 10px;"><strong>Свой вариант:</strong> ${customNote}</div>` : ''}
+      `;
+
+      document.getElementById('modal-results-body').innerHTML = resultsHtml;
+      document.getElementById('final-modal').classList.add('active');
+      triggerConfetti();
+    }
+
+    function closeModal() {
+      document.getElementById('final-modal').classList.remove('active');
+    }
+  </script>
+</body>
+</html>
